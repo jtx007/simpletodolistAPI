@@ -3,7 +3,7 @@ module Api
         class UsersController < ApplicationController
 
             def create
-                @user = User.new(user_parans)
+                @user = User.new(user_params)
                 if @user.save
                     render json: @user, status: :created
                 else 
@@ -11,9 +11,22 @@ module Api
                 end
             end
 
+            def login
+                auth_object = Authentication.new(login_params)
+                if auth_object.authenticate
+                    render json: {message: "Login successful!", token: auth_object.generate_token }, status: :ok
+                else
+                render json: {message: "Incorrect username/password combination"}, status: :unauthorized
+                end
+            end
+
             private
 
             def user_params
+                params.require(:user).permit(:username, :password)
+            end
+
+            def login_params
                 params.require(:user).permit(:username, :password)
             end
         end
