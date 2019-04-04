@@ -14,7 +14,8 @@ module Api
             def login
                 auth_object = Authentication.new(login_params)
                 if auth_object.authenticate
-                    render json: {message: "Login successful!", token: auth_object.generate_token }, status: :ok
+                    token = auth_object.generate_token
+                    render json: {message: "Login successful!", token: token }, status: :ok
                 else
                 render json: {message: "Incorrect username/password combination"}, status: :unauthorized
                 end
